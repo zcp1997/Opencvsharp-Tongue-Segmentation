@@ -12,8 +12,8 @@ namespace 舌图分割
         public static GrabCutModes GRABCUTMODE = GrabCutModes.InitWithRect;  //grabcut的mode
         public static int ERODE_ITERATIONS = 2;//分水岭
         public static int DILATE_ITERATIONS = 3;//分水岭
-        public static int MEANSHIFT_MAXLEVEL = 3; //均值漂移
-        public static ThresholdTypes MEANSHIFT_TYPE = ThresholdTypes.Otsu; //均值漂移
+        public static int MEANSHIFT_SP = 100; //均值漂移
+        public static int MEANSHIFT_SR = 50;//均值漂移
         public static Scalar LODIFF = new Scalar(5, 5, 5); //Floodfill
         public static Scalar UPDIFF = new Scalar(5, 5, 5);//Floodfill
         public static ThresholdTypes CONTOUR_TYPE = ThresholdTypes.Otsu;//通过轮廓
@@ -119,7 +119,7 @@ namespace 舌图分割
                         Mat res = MeanShift(image);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         ShowImage(res, duration);
-                        showParameters("金字塔分割层数：", MEANSHIFT_MAXLEVEL.ToString(), "二值化算子：", MEANSHIFT_TYPE.ToString());
+                        showParameters("颜色域半径：", MEANSHIFT_SP.ToString(), "空间域半径：", MEANSHIFT_SR.ToString());
                     }
                     //漫水填充分割 
                     else if (comboBox1.Text == "floodfill")
@@ -205,7 +205,7 @@ namespace 舌图分割
         private Mat MeanShift(Mat image)
         {
             Mat res = new Mat();
-            Cv2.PyrMeanShiftFiltering(image, res, 100, 50, MEANSHIFT_MAXLEVEL);
+            Cv2.PyrMeanShiftFiltering(image, res, MEANSHIFT_SP, MEANSHIFT_SR, 3);
             RNG rng = Cv2.TheRNG();
             Mat mask1 = new Mat(res.Rows + 2, res.Cols + 2, MatType.CV_8UC1, s: Scalar.All(0));
             Rect rect = new Rect();
@@ -231,8 +231,8 @@ namespace 舌图分割
             //对H和V分量进行二值化
             Mat imgHh = new Mat();
             Mat imgVv = new Mat();
-            Cv2.Threshold(imgH, imgHh, 100, 255, MEANSHIFT_TYPE);
-            Cv2.Threshold(imgV, imgVv, 100, 255, MEANSHIFT_TYPE);
+            Cv2.Threshold(imgH, imgHh, 100, 255, ThresholdTypes.Otsu);
+            Cv2.Threshold(imgV, imgVv, 100, 255, ThresholdTypes.Otsu);
             Mat imgHV = imgHh & imgVv;//合并
             //去噪点
             Mat element = Cv2.GetStructuringElement(MorphShapes.Rect, new Size(10, 10));
