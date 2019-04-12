@@ -205,7 +205,7 @@ namespace 舌图分割
         private Mat MeanShift(Mat image)
         {
             Mat res = new Mat();
-            Cv2.PyrMeanShiftFiltering(image, res, 50, 50, MEANSHIFT_MAXLEVEL);
+            Cv2.PyrMeanShiftFiltering(image, res, 100, 50, MEANSHIFT_MAXLEVEL);
             RNG rng = Cv2.TheRNG();
             Mat mask1 = new Mat(res.Rows + 2, res.Cols + 2, MatType.CV_8UC1, s: Scalar.All(0));
             Rect rect = new Rect();
