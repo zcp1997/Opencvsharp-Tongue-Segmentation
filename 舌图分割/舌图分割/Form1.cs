@@ -146,7 +146,7 @@ namespace 舌图分割
                     else if (comboBox1.Text == "floodfill")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = floodFill(image, LODIFF, UPDIFF);
+                        Mat res = floodFill(image, LODIFF, UPDIFF, 20, 30, image.Cols - (20 << 1), image.Rows - 30);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         showImage(res, duration);
                         showParameters("像素最大下行差异值：", LODIFF.ToString(), "像素最大上行差异值：", UPDIFF.ToString());
@@ -270,14 +270,19 @@ namespace 舌图分割
         }
 
         //FloodFill函数封装
-        private Mat floodFill(Mat image,Scalar LODIFF,Scalar UPDIFF)
+        private Mat floodFill(Mat image,Scalar LODIFF,Scalar UPDIFF,int x,int y,int w,int h)
         {
             Rect rect = new Rect();
-            rect.X = 20;
-            rect.Y = 30;
-            rect.Width = image.Cols - (rect.X << 1);
-            rect.Height = image.Rows - (rect.Y << 1);
+            rect.X = x;
+            rect.Y = y;
+            rect.Width = w;
+            rect.Height = h;
             Cv2.FloodFill(image, new Point(10, 10), new Scalar(0, 0, 0), out rect, LODIFF, UPDIFF, 4);
+            textBox7.Text = x.ToString();
+            textBox8.Text = y.ToString();
+            textBox9.Text = w.ToString();
+            textBox10.Text = h.ToString();
+            panel1.Show();
             return image;
         }
 
@@ -684,11 +689,15 @@ namespace 舌图分割
                 string diff21 = diff2.Replace("[", string.Empty);
                 string diff22 = diff21.Replace("]", string.Empty);
                 string[] str2 = diff22.Split(',');
+                int x = int.Parse(textBox7.Text);
+                int y = int.Parse(textBox8.Text);
+                int w = int.Parse(textBox9.Text);
+                int h = int.Parse(textBox10.Text);
                 Scalar updiff = new Scalar(int.Parse(str2[0]), int.Parse(str2[1]), int.Parse(str2[2]), int.Parse(str2[3]));
                 System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
                 Mat image = BitmapConverter.ToMat(bitmap);
                 double startTime = Cv2.GetTickCount();
-                Mat res = floodFill(image, lodiff, updiff);
+                Mat res = floodFill(image, lodiff, updiff, x, y, w, h);
                 double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                 showImage(res, duration);
                 showParameters("像素最大下行差异值：", lodiff.ToString(), "像素最大上行差异值：", updiff.ToString());
