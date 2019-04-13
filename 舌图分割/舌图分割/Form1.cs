@@ -14,8 +14,8 @@ namespace 舌图分割
         public static int DILATE_ITERATIONS = 3;//分水岭
         public static int MEANSHIFT_SP = 100; //均值漂移
         public static int MEANSHIFT_SR = 50;//均值漂移
-        public static Scalar LODIFF = new Scalar(5, 5, 5); //Floodfill
-        public static Scalar UPDIFF = new Scalar(5, 5, 5);//Floodfill
+        public static Scalar LODIFF = new Scalar(5, 5, 5, 0); //Floodfill
+        public static Scalar UPDIFF = new Scalar(5, 5, 5, 0);//Floodfill
         public static ThresholdTypes CONTOUR_TYPE = ThresholdTypes.Otsu;//通过轮廓
         public static int SIGMAX = 2; //通过轮廓
 
@@ -27,17 +27,31 @@ namespace 舌图分割
         //载入窗体
         private void Form1_Load(object sender, EventArgs e)
         {
+            DoubleBuffered = true;
             pictureBox2.MouseWheel += new MouseEventHandler(pictureBox2_MouseWheel);
             skinEngine1.SkinFile = Environment.CurrentDirectory + "\\RealOne.ssk";
             value1.Hide();
             value2.Hide();
             textBox5.Hide();
             textBox6.Hide();
+            panel1.Hide();
+            button4.Hide();
+        }
+
+        //grabcut show rect
+        private void showRect(int x,int y,int w,int h)
+        {
+            textBox7.Text = x.ToString();
+            textBox8.Text = y.ToString();
+            textBox9.Text = w.ToString();
+            textBox10.Text = h.ToString();
+            panel1.Show();
         }
 
         //图像分割操作
         private void button2_Click(object sender, EventArgs e)
         {
+            panel1.Hide();
             textBox1.Text = "";
             textBox2.Text = "";
             textBox3.Text = "";
@@ -52,6 +66,7 @@ namespace 舌图分割
                 string fileName1 = openFileDialog.FileName;
                 if (fileName1 != "")
                 {
+                    button4.Show();
                     pictureBox1.ImageLocation = fileName1;
                     Mat image = Cv2.ImRead(fileName1);
                     Mat grayImage = new Mat();
@@ -66,14 +81,14 @@ namespace 舌图分割
                                 double startTime = Cv2.GetTickCount();
                                 AdaptiveThreshold(image, grayImage, binImage, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary);//自适应阈值分割函数
                                 double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                                ShowImage(binImage, duration);
+                                showImage(binImage, duration);
                             }
                             if (comboBox3.Text == "ADAPTIVE_THRESH_GAUSSIAN_C")
                             {
                                 double startTime = Cv2.GetTickCount();
                                 AdaptiveThreshold(image, grayImage, binImage, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary);//自适应阈值分割函数
                                 double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                                ShowImage(binImage, duration);
+                                showImage(binImage, duration);
                             }
                         }
                         if (comboBox2.Text == "THRESH_BINARY_INV")
@@ -83,60 +98,66 @@ namespace 舌图分割
                                 double startTime = Cv2.GetTickCount();
                                 AdaptiveThreshold(image, grayImage, binImage, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv);//自适应阈值分割函数
                                 double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                                ShowImage(binImage, duration);
+                                showImage(binImage, duration);
                             }
                             if (comboBox3.Text == "ADAPTIVE_THRESH_GAUSSIAN_C")
                             {
                                 double startTime = Cv2.GetTickCount();
                                 AdaptiveThreshold(image, grayImage, binImage, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.BinaryInv);//自适应阈值分割函数                                                                                                    //算法结束                                                                                                               
                                 double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                                ShowImage(binImage, duration);
+                                showImage(binImage, duration);
                             }
                         }
+                        panel1.Hide();
+                        value1.Hide();
+                        value2.Hide();
+                        textBox5.Hide();
+                        textBox6.Hide();
+                        button4.Hide();
                     }
                     //grabcut函数迭代五次
                     else if (comboBox1.Text == "grabcut")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = grabCut(image);
+                        Mat res = grabCut(image, ITER_COUNT, GRABCUTMODE, 20, 30, image.Cols - (20 << 1), image.Rows - 30);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        ShowImage(res, duration);
+                        showImage(res, duration);
                         showParameters("迭代次数：", ITER_COUNT.ToString(), "分割算子：", GRABCUTMODE.ToString());
                     }
                     //分水岭
                     else if (comboBox1.Text == "watershed")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat result = WaterShed(image);
+                        Mat result = waterShed(image,ERODE_ITERATIONS,DILATE_ITERATIONS);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        ShowImage(result, duration);
+                        showImage(result, duration);
                         showParameters("腐蚀次数：", ERODE_ITERATIONS.ToString(), "膨胀次数：", DILATE_ITERATIONS.ToString());
                     }
                     //均值漂移
                     else if (comboBox1.Text == "meanshift")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = MeanShift(image);
+                        Mat res = MeanShift(image,MEANSHIFT_SP,MEANSHIFT_SR);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        ShowImage(res, duration);
+                        showImage(res, duration);
                         showParameters("颜色域半径：", MEANSHIFT_SP.ToString(), "空间域半径：", MEANSHIFT_SR.ToString());
                     }
                     //漫水填充分割 
                     else if (comboBox1.Text == "floodfill")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = floodFill(image);
+                        Mat res = floodFill(image, LODIFF, UPDIFF);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        ShowImage(res, duration);
+                        showImage(res, duration);
                         showParameters("像素最大下行差异值：", LODIFF.ToString(), "像素最大上行差异值：", UPDIFF.ToString());
                     }
                     //通过轮廓分割图像
                     else if (comboBox1.Text == "contour")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = contourSeg(image);
+                        Mat res = contourSeg(image, CONTOUR_TYPE, SIGMAX);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        ShowImage(res, duration);
+                        showImage(res, duration);
                         showParameters("二值化算子:", CONTOUR_TYPE.ToString(), "高斯核x方向标准差:", SIGMAX.ToString());
                     }
                     //异常处理
@@ -157,26 +178,27 @@ namespace 舌图分割
         }
 
         //Grabcut分割函数封装
-        private Mat grabCut(Mat image)
+        private Mat grabCut(Mat image,int ITER_COUNT,GrabCutModes GRABCUTMODE,int x,int y,int w,int h)
         {
             var bgModel = new Mat();
             var fgdModel = new Mat();
             var mask = new Mat();
             const int GC_PR_FGD = 3;
             Rect rect = new Rect();
-            rect.X = 20;
-            rect.Y = 30;
-            rect.Width = image.Cols - -(rect.X << 1);
-            rect.Height = image.Rows - (rect.Y << 1);
+            rect.X = x;
+            rect.Y = y;
+            rect.Width = w;
+            rect.Height = h;
             Cv2.GrabCut(image, mask, rect, bgModel, fgdModel, ITER_COUNT, GRABCUTMODE);
             Cv2.Compare(mask, GC_PR_FGD, mask, CmpTypes.EQ);
             Mat foreground = new Mat(image.Size(), MatType.CV_8UC3, new Scalar(0, 0, 0));
             image.CopyTo(foreground, mask);
+            showRect(rect.X, rect.Y, rect.Width, rect.Height);
             return foreground;
         }
 
         //分水岭分割函数封装
-        private Mat WaterShed(Mat src)
+        private Mat waterShed(Mat src,int ERODE_ITERATIONS,int DILATE_ITERATIONS)
         {
             var imageGray = new Mat();
             var thresh = new Mat();
@@ -202,7 +224,7 @@ namespace 舌图分割
         }
 
         //均值漂移函数封装
-        private Mat MeanShift(Mat image)
+        private Mat MeanShift(Mat image,int MEANSHIFT_SP,int MEANSHIFT_SR)
         {
             Mat res = new Mat();
             Cv2.PyrMeanShiftFiltering(image, res, MEANSHIFT_SP, MEANSHIFT_SR, 3);
@@ -248,7 +270,7 @@ namespace 舌图分割
         }
 
         //FloodFill函数封装
-        private Mat floodFill(Mat image)
+        private Mat floodFill(Mat image,Scalar LODIFF,Scalar UPDIFF)
         {
             Rect rect = new Rect();
             rect.X = 20;
@@ -260,7 +282,7 @@ namespace 舌图分割
         }
 
         //通过轮廓分割图像
-        private Mat contourSeg(Mat src)
+        private Mat contourSeg(Mat src,ThresholdTypes CONTOUR_TYPE,int SIGMAX)
         {
             Mat imageGray = new Mat();
             Mat img = new Mat();
@@ -532,7 +554,7 @@ namespace 舌图分割
         }
 
         //显示图片并显示运行时间
-        private void ShowImage(Mat image, double duration)
+        private void showImage(Mat image, double duration)
         {
             Cv2.ImShow("舌图分割结果", image);
             System.Drawing.Bitmap bitmap = BitmapConverter.ToBitmap(image); //转 Scalar为C#中Bitmap
@@ -593,6 +615,97 @@ namespace 舌图分割
             }
         }
 
+        //更改参数再次分割图片
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if(comboBox1.Text == "grabcut" && value1.Text == "迭代次数：" && value2.Text == "分割算子：")
+            {
+                int iter_count = int.Parse(textBox5.Text);
+                GrabCutModes grabcutmode = (GrabCutModes)(Enum.Parse(typeof(GrabCutModes), textBox6.Text));
+                int x = int.Parse(textBox7.Text);
+                int y = int.Parse(textBox8.Text);
+                int w = int.Parse(textBox9.Text);
+                int h = int.Parse(textBox10.Text);
+                if (iter_count > 20 || iter_count < 0)
+                {
+                    MessageBox.Show("迭代次数于0-20次之内较为合适");
+                }
+                else
+                {
+                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                    Mat image = BitmapConverter.ToMat(bitmap);
+                    double startTime = Cv2.GetTickCount();
+                    Mat res = grabCut(image, iter_count, grabcutmode, x, y, w, h);
+                    double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                    showImage(res, duration);
+                    showParameters("迭代次数：", iter_count.ToString(), "分割算子：", grabcutmode.ToString());
+                    showRect(x, y, w, h);
+                }
+            }
+            if (comboBox1.Text == "watershed" && value1.Text == "腐蚀次数：" && value2.Text == "膨胀次数：")
+            {
+                int erode_interations = int.Parse(textBox5.Text);
+                int dilate_interations = int.Parse(textBox6.Text);
+                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                Mat image = BitmapConverter.ToMat(bitmap);
+                double startTime = Cv2.GetTickCount();
+                Mat result = waterShed(image, erode_interations, dilate_interations);
+                double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                showImage(result, duration);
+                showParameters("腐蚀次数：", erode_interations.ToString(), "膨胀次数：", dilate_interations.ToString());
+            }
+            if (comboBox1.Text == "meanshift" && value1.Text == "颜色域半径：" && value2.Text == "空间域半径：")
+            {
+                int meanshift_sp = int.Parse(textBox5.Text);
+                int meanshift_sr = int.Parse(textBox6.Text);
+                if(meanshift_sp<0 || meanshift_sr < 0)
+                {
+                    MessageBox.Show("参数有误");
+                }
+                else
+                {
+                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                    Mat image = BitmapConverter.ToMat(bitmap);
+                    double startTime = Cv2.GetTickCount();
+                    Mat res = MeanShift(image, meanshift_sp, meanshift_sr);
+                    double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                    showImage(res, duration);
+                    showParameters("颜色域半径：", meanshift_sp.ToString(), "空间域半径：", meanshift_sr.ToString());
+                }       
+            }
+            if (comboBox1.Text == "floodfill" && value1.Text == "像素最大下行差异值：" && value2.Text == "像素最大上行差异值：")
+            {
+                string diff1 = textBox5.Text;
+                string diff11 = diff1.Replace("[", "");
+                string diff12 = diff11.Replace("]", "");
+                string[] str1 = diff12.Split(',');
+                Scalar lodiff = new Scalar(int.Parse(str1[0]), int.Parse(str1[1]), int.Parse(str1[2]), int.Parse(str1[3]));
+                string diff2 = textBox6.Text;
+                string diff21 = diff2.Replace("[", string.Empty);
+                string diff22 = diff21.Replace("]", string.Empty);
+                string[] str2 = diff22.Split(',');
+                Scalar updiff = new Scalar(int.Parse(str2[0]), int.Parse(str2[1]), int.Parse(str2[2]), int.Parse(str2[3]));
+                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                Mat image = BitmapConverter.ToMat(bitmap);
+                double startTime = Cv2.GetTickCount();
+                Mat res = floodFill(image, lodiff, updiff);
+                double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                showImage(res, duration);
+                showParameters("像素最大下行差异值：", lodiff.ToString(), "像素最大上行差异值：", updiff.ToString());
+            }
+            if (comboBox1.Text == "contour" && value1.Text == "二值化算子:" && value2.Text == "高斯核x方向标准差:")
+            {
+                ThresholdTypes contour_type = (ThresholdTypes)(Enum.Parse(typeof(ThresholdTypes), textBox5.Text));
+                int sigmax = int.Parse(textBox6.Text);
+                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                Mat image = BitmapConverter.ToMat(bitmap);
+                double startTime = Cv2.GetTickCount();
+                Mat res = contourSeg(image, contour_type, sigmax);
+                double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                showImage(res, duration);
+                showParameters("二值化算子:", contour_type.ToString(), "高斯核x方向标准差:", sigmax.ToString());
+            }
+        }
     }
 }
 

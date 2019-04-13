@@ -66,9 +66,21 @@
             this.value2 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -312,7 +324,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(64, 427);
+            this.button1.Location = new System.Drawing.Point(95, 427);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(165, 27);
@@ -384,10 +396,9 @@
             // 
             this.textBox5.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.textBox5.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox5.Location = new System.Drawing.Point(673, 359);
+            this.textBox5.Location = new System.Drawing.Point(673, 329);
             this.textBox5.Margin = new System.Windows.Forms.Padding(2);
             this.textBox5.Name = "textBox5";
-            this.textBox5.ReadOnly = true;
             this.textBox5.Size = new System.Drawing.Size(137, 26);
             this.textBox5.TabIndex = 31;
             // 
@@ -395,10 +406,9 @@
             // 
             this.textBox6.BackColor = System.Drawing.SystemColors.ScrollBar;
             this.textBox6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox6.Location = new System.Drawing.Point(673, 392);
+            this.textBox6.Location = new System.Drawing.Point(673, 362);
             this.textBox6.Margin = new System.Windows.Forms.Padding(2);
             this.textBox6.Name = "textBox6";
-            this.textBox6.ReadOnly = true;
             this.textBox6.Size = new System.Drawing.Size(137, 26);
             this.textBox6.TabIndex = 29;
             // 
@@ -407,7 +417,7 @@
             this.value1.AutoSize = true;
             this.value1.BackColor = System.Drawing.Color.LightGray;
             this.value1.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.value1.Location = new System.Drawing.Point(496, 360);
+            this.value1.Location = new System.Drawing.Point(498, 330);
             this.value1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.value1.Name = "value1";
             this.value1.Size = new System.Drawing.Size(0, 16);
@@ -418,7 +428,7 @@
             this.value2.AutoSize = true;
             this.value2.BackColor = System.Drawing.Color.LightGray;
             this.value2.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.value2.Location = new System.Drawing.Point(496, 395);
+            this.value2.Location = new System.Drawing.Point(498, 365);
             this.value2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.value2.Name = "value2";
             this.value2.Size = new System.Drawing.Size(0, 16);
@@ -443,11 +453,140 @@
             this.label11.TabIndex = 34;
             this.label11.Text = "算法评价表";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.LightGray;
+            this.label12.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label12.Location = new System.Drawing.Point(58, 18);
+            this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(26, 16);
+            this.label12.TabIndex = 36;
+            this.label12.Text = "x:";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.LightGray;
+            this.label13.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label13.Location = new System.Drawing.Point(176, 18);
+            this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(26, 16);
+            this.label13.TabIndex = 35;
+            this.label13.Text = "y:";
+            // 
+            // label14
+            // 
+            this.label14.BackColor = System.Drawing.Color.LightGray;
+            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label14.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label14.Location = new System.Drawing.Point(0, 18);
+            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(54, 46);
+            this.label14.TabIndex = 37;
+            this.label14.Text = "区域";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.LightGray;
+            this.label15.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label15.Location = new System.Drawing.Point(176, 48);
+            this.label15.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(51, 16);
+            this.label15.TabIndex = 38;
+            this.label15.Text = "高度:";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.BackColor = System.Drawing.Color.LightGray;
+            this.label16.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label16.Location = new System.Drawing.Point(58, 48);
+            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(51, 16);
+            this.label16.TabIndex = 39;
+            this.label16.Text = "宽度:";
+            // 
+            // textBox7
+            // 
+            this.textBox7.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.textBox7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox7.Location = new System.Drawing.Point(122, 16);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(53, 26);
+            this.textBox7.TabIndex = 40;
+            // 
+            // textBox8
+            // 
+            this.textBox8.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.textBox8.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox8.Location = new System.Drawing.Point(247, 16);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.Size = new System.Drawing.Size(65, 26);
+            this.textBox8.TabIndex = 41;
+            // 
+            // textBox9
+            // 
+            this.textBox9.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.textBox9.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox9.Location = new System.Drawing.Point(122, 44);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(53, 26);
+            this.textBox9.TabIndex = 42;
+            // 
+            // textBox10
+            // 
+            this.textBox10.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.textBox10.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox10.Location = new System.Drawing.Point(247, 44);
+            this.textBox10.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(65, 26);
+            this.textBox10.TabIndex = 43;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.textBox10);
+            this.panel1.Controls.Add(this.label14);
+            this.panel1.Controls.Add(this.textBox9);
+            this.panel1.Controls.Add(this.label13);
+            this.panel1.Controls.Add(this.textBox8);
+            this.panel1.Controls.Add(this.label12);
+            this.panel1.Controls.Add(this.textBox7);
+            this.panel1.Controls.Add(this.label15);
+            this.panel1.Controls.Add(this.label16);
+            this.panel1.Location = new System.Drawing.Point(498, 393);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(332, 82);
+            this.panel1.TabIndex = 44;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(835, 328);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(101, 60);
+            this.button4.TabIndex = 45;
+            this.button4.Text = "重新分割";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(963, 484);
+            this.ClientSize = new System.Drawing.Size(963, 482);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.value1);
@@ -477,6 +616,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
@@ -485,6 +625,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -527,6 +669,17 @@
         private System.Windows.Forms.Label value2;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button4;
     }
 }
 
