@@ -21,13 +21,13 @@ namespace 舌图分割
 
         public Form1()
         {
+            DoubleBuffered = true;
             InitializeComponent();
         }
 
         //载入窗体
         private void Form1_Load(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
             pictureBox2.MouseWheel += new MouseEventHandler(pictureBox2_MouseWheel);
             skinEngine1.SkinFile = Environment.CurrentDirectory + "\\RealOne.ssk";
             value1.Hide();
@@ -708,9 +708,3 @@ namespace 舌图分割
         }
     }
 }
-
-
-
-
-
-
