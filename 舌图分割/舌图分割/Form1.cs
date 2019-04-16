@@ -3,15 +3,14 @@ using OpenCvSharp.Extensions;
 using System;
 using System.Windows.Forms;
 
-
 namespace 舌图分割
 {
     public partial class Form1 : Form
     {
         public static int ITER_COUNT = 5; //grabcut迭代次数
         public static GrabCutModes GRABCUTMODE = GrabCutModes.InitWithRect;  //grabcut的mode
-        public static int ERODE_ITERATIONS = 2;//分水岭
-        public static int DILATE_ITERATIONS = 3;//分水岭
+        public static int MEADIANBlUR_KSIZE = 15;//分水岭
+        public static Size ELEMENT_SIZE = new Size(15, 15);//分水岭
         public static int MEANSHIFT_SP = 100; //均值漂移
         public static int MEANSHIFT_SR = 50;//均值漂移
         public static Scalar LODIFF = new Scalar(5, 5, 5, 0); //Floodfill
@@ -36,16 +35,6 @@ namespace 舌图分割
             textBox6.Hide();
             panel1.Hide();
             button4.Hide();
-        }
-
-        //grabcut show rect
-        private void showRect(int x,int y,int w,int h)
-        {
-            textBox7.Text = x.ToString();
-            textBox8.Text = y.ToString();
-            textBox9.Text = w.ToString();
-            textBox10.Text = h.ToString();
-            panel1.Show();
         }
 
         //图像分割操作
@@ -128,10 +117,10 @@ namespace 舌图分割
                     else if (comboBox1.Text == "watershed")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat result = waterShed(image,ERODE_ITERATIONS,DILATE_ITERATIONS);
+                        Mat result = waterShed(image, MEADIANBlUR_KSIZE, ELEMENT_SIZE);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         showImage(result, duration);
-                        showParameters("腐蚀次数：", ERODE_ITERATIONS.ToString(), "膨胀次数：", DILATE_ITERATIONS.ToString());
+                        showParameters("中值滤波内核：", MEADIANBlUR_KSIZE.ToString(), "形态学卷积核：", "(" + ELEMENT_SIZE.Width.ToString() + "," + ELEMENT_SIZE.Height.ToString() + ")");
                     }
                     //均值漂移
                     else if (comboBox1.Text == "meanshift")
@@ -198,7 +187,7 @@ namespace 舌图分割
         }
 
         //分水岭分割函数封装
-        private Mat waterShed(Mat src,int ERODE_ITERATIONS,int DILATE_ITERATIONS)
+        private Mat waterShed(Mat src,int MEADIANBlUR_KSIZE,Size ELEMENT_SIZE)
         {
             var imageGray = new Mat();
             var thresh = new Mat();
@@ -209,17 +198,24 @@ namespace 舌图分割
             var marker32 = new Mat();
             var m = new Mat();
             var res = new Mat();
+            var threshOpen = new Mat();
+            var threshClose= new Mat();
             Cv2.CvtColor(src, imageGray, ColorConversionCodes.BGR2GRAY);
+            Cv2.EqualizeHist(imageGray, imageGray);//直方图均衡化
+            Cv2.MedianBlur(imageGray, imageGray, MEADIANBlUR_KSIZE);//中值滤波
             Cv2.Threshold(imageGray, thresh, 0, 255, ThresholdTypes.Otsu);
-            Cv2.Erode(thresh, fg, 0, null, ERODE_ITERATIONS);
-            Cv2.Dilate(thresh, bgt, 0, null, DILATE_ITERATIONS);
+            Cv2.Erode(thresh, fg, 0, null, 2);
+            Cv2.Dilate(thresh, bgt, 0, null, 3);
             Cv2.Threshold(bgt, bg, 1, 128, ThresholdTypes.BinaryInv);
             marker = fg + bg;
             marker.ConvertTo(marker32, MatType.CV_32SC1);
             Cv2.Watershed(src, marker32);
             Cv2.ConvertScaleAbs(marker32, m);
             Cv2.Threshold(m, thresh, 0, 255, ThresholdTypes.Otsu);
-            Cv2.BitwiseAnd(src, src, res, thresh);
+            var element = Cv2.GetStructuringElement(MorphShapes.Rect, ELEMENT_SIZE);//获取自定义核
+            Cv2.MorphologyEx(thresh, threshOpen, MorphTypes.Open, element);//开运算
+            Cv2.MorphologyEx(threshOpen, threshClose, MorphTypes.Close, element);//闭运算
+            Cv2.BitwiseAnd(src, src, res, threshClose);
             return res;
         }
 
@@ -620,6 +616,16 @@ namespace 舌图分割
             }
         }
 
+        //grabcut show rect
+        private void showRect(int x, int y, int w, int h)
+        {
+            textBox7.Text = x.ToString();
+            textBox8.Text = y.ToString();
+            textBox9.Text = w.ToString();
+            textBox10.Text = h.ToString();
+            panel1.Show();
+        }
+
         //更改参数再次分割图片
         private void button4_Click(object sender, EventArgs e)
         {
@@ -647,17 +653,28 @@ namespace 舌图分割
                     showRect(x, y, w, h);
                 }
             }
-            if (comboBox1.Text == "watershed" && value1.Text == "腐蚀次数：" && value2.Text == "膨胀次数：")
+            if (comboBox1.Text == "watershed" && value1.Text == "中值滤波内核：" && value2.Text == "形态学卷积核：")
             {
-                int erode_interations = int.Parse(textBox5.Text);
-                int dilate_interations = int.Parse(textBox6.Text);
-                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                Mat image = BitmapConverter.ToMat(bitmap);
-                double startTime = Cv2.GetTickCount();
-                Mat result = waterShed(image, erode_interations, dilate_interations);
-                double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                showImage(result, duration);
-                showParameters("腐蚀次数：", erode_interations.ToString(), "膨胀次数：", dilate_interations.ToString());
+                if(int.Parse(textBox5.Text)%2 == 0)
+                {
+                    MessageBox.Show("中值滤波内核应为奇数，请重新输入。");
+                }
+                else
+                {
+                    int meadianblur_ksize = int.Parse(textBox5.Text);
+                    string text = textBox6.Text;
+                    string diff11 = text.Replace("(", "");
+                    string diff12 = diff11.Replace(")", "");
+                    string[] str = diff12.Split(',');
+                    Size element_size = new Size(int.Parse(str[0]), int.Parse(str[1]));
+                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                    Mat image = BitmapConverter.ToMat(bitmap);
+                    double startTime = Cv2.GetTickCount();
+                    Mat result = waterShed(image, meadianblur_ksize, element_size);
+                    double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                    showImage(result, duration);
+                    showParameters("中值滤波内核：", meadianblur_ksize.ToString(), "形态学卷积核：", "(" + element_size.Width.ToString() + "," + element_size.Height.ToString() + ")");
+                }    
             }
             if (comboBox1.Text == "meanshift" && value1.Text == "颜色域半径：" && value2.Text == "空间域半径：")
             {
