@@ -11,7 +11,7 @@ namespace 舌图分割
         public static GrabCutModes GRABCUTMODE = GrabCutModes.InitWithRect;  //grabcut的mode
         public static int MEADIANBlUR_KSIZE = 15;//分水岭
         public static Size ELEMENT_SIZE = new Size(15, 15);//分水岭
-        public static int MEANSHIFT_SP = 100; //均值漂移
+        public static int MEANSHIFT_SP = 120; //均值漂移
         public static int MEANSHIFT_SR = 50;//均值漂移
         public static Scalar LODIFF = new Scalar(5, 5, 5, 0); //Floodfill
         public static Scalar UPDIFF = new Scalar(5, 5, 5, 0);//Floodfill
@@ -126,7 +126,7 @@ namespace 舌图分割
                     else if (comboBox1.Text == "meanshift")
                     {
                         double startTime = Cv2.GetTickCount();
-                        Mat res = MeanShift(image,MEANSHIFT_SP,MEANSHIFT_SR);
+                        Mat res = meanShift(image,MEANSHIFT_SP,MEANSHIFT_SR);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         showImage(res, duration);
                         showParameters("颜色域半径：", MEANSHIFT_SP.ToString(), "空间域半径：", MEANSHIFT_SR.ToString());
@@ -220,25 +220,10 @@ namespace 舌图分割
         }
 
         //均值漂移函数封装
-        private Mat MeanShift(Mat image,int MEANSHIFT_SP,int MEANSHIFT_SR)
+        private Mat meanShift(Mat image,int MEANSHIFT_SP,int MEANSHIFT_SR)
         {
             Mat res = new Mat();
-            Cv2.PyrMeanShiftFiltering(image, res, MEANSHIFT_SP, MEANSHIFT_SR, 3);
-            RNG rng = Cv2.TheRNG();
-            Mat mask1 = new Mat(res.Rows + 2, res.Cols + 2, MatType.CV_8UC1, s: Scalar.All(0));
-            Rect rect = new Rect();
-            for (int y = 0; y < res.Rows; y++)
-            {
-                for (int x = 0; x < res.Cols; x++)
-                {
-                    if (mask1.At<char>(y + 1, x + 1) == 0)
-                    {
-                        Scalar newVal = new Scalar(rng.Uniform(0, 256), rng.Uniform(0, 256), rng.Uniform(0, 256));
-                        Cv2.FloodFill(res, mask1, new Point(x, y), newVal, out rect, Scalar.All(5), Scalar.All(5), FloodFillFlags.MaskOnly);
-                    }
-                }
-            }
-            Mat mask = new Mat();
+            Cv2.PyrMeanShiftFiltering(image, res, MEANSHIFT_SP, MEANSHIFT_SR, 2);
             Mat hsv = new Mat();
             Mat[] hsvChannels;
             Cv2.CvtColor(res, hsv, ColorConversionCodes.BGR2HSV);
@@ -249,8 +234,8 @@ namespace 舌图分割
             //对H和V分量进行二值化
             Mat imgHh = new Mat();
             Mat imgVv = new Mat();
-            Cv2.Threshold(imgH, imgHh, 100, 255, ThresholdTypes.Otsu);
-            Cv2.Threshold(imgV, imgVv, 100, 255, ThresholdTypes.Otsu);
+            Cv2.Threshold(imgH, imgHh, 0, 255, ThresholdTypes.Otsu);
+            Cv2.Threshold(imgV, imgVv, 0, 255, ThresholdTypes.Otsu);
             Mat imgHV = imgHh & imgVv;//合并
             //去噪点
             Mat element = Cv2.GetStructuringElement(MorphShapes.Rect, new Size(10, 10));
@@ -689,7 +674,7 @@ namespace 舌图分割
                     System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
                     Mat image = BitmapConverter.ToMat(bitmap);
                     double startTime = Cv2.GetTickCount();
-                    Mat res = MeanShift(image, meanshift_sp, meanshift_sr);
+                    Mat res = meanShift(image, meanshift_sp, meanshift_sr);
                     double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                     showImage(res, duration);
                     showParameters("颜色域半径：", meanshift_sp.ToString(), "空间域半径：", meanshift_sr.ToString());
