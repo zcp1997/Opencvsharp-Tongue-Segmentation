@@ -77,6 +77,7 @@
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button4 = new System.Windows.Forms.Button();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -581,11 +582,21 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // comboBox4
+            // 
+            this.comboBox4.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(673, 363);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(137, 20);
+            this.comboBox4.TabIndex = 44;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 482);
+            this.Controls.Add(this.comboBox4);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -680,6 +691,7 @@
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ComboBox comboBox4;
     }
 }
 
