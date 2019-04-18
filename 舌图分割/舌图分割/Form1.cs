@@ -100,8 +100,9 @@ namespace 舌图分割
                                 showImage(binImage, duration);
                             }
                         }
-                        else
+                        else if (comboBox2.Text == "" || comboBox3.Text == "" )
                         {
+                            button4.Hide();
                             MessageBox.Show("请选择参数一和参数二再进行分割");
                         }
                         panel1.Hide();
