@@ -17,6 +17,7 @@ namespace 舌图分割
         public static Scalar UPDIFF = new Scalar(5, 5, 5, 0);//Floodfill
         public static ThresholdTypes CONTOUR_TYPE = ThresholdTypes.Otsu;//通过轮廓
         public static int SIGMAX = 2; //通过轮廓
+        public int saveCount = 1;
 
         public Form1()
         {
@@ -45,6 +46,7 @@ namespace 舌图分割
             value1.Hide();
             value2.Hide();
             textBox5.Hide();
+            textBox6.Hide();
             button4.Hide();
             comboBox4.Hide();
             textBox1.Text = "";
@@ -681,9 +683,10 @@ namespace 舌图分割
                     }
                     else
                     {
+                        string count = saveCount++.ToString();
                         string text = comboBox1.Text;
-                        Cv2.ImWrite("D:\\" + text + ".png", mat);
-                        MessageBox.Show("保存成功！图片默认保存为D盘路径下的" + text + ".png");
+                        Cv2.ImWrite("D:\\" + text + count + ".png", mat);
+                        MessageBox.Show("保存成功！图片默认保存为D盘路径下的" + text + count + ".png");
                     }
                 }
             }
