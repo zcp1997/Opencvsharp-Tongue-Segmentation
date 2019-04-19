@@ -42,6 +42,10 @@ namespace 舌图分割
         private void button2_Click(object sender, EventArgs e)
         {
             panel1.Hide();
+            value1.Hide();
+            value2.Hide();
+            textBox5.Hide();
+            button4.Hide();
             comboBox4.Hide();
             textBox1.Text = "";
             textBox2.Text = "";
@@ -100,7 +104,7 @@ namespace 舌图分割
                                 showImage(binImage, duration);
                             }
                         }
-                        else if (comboBox2.Text == "" || comboBox3.Text == "" )
+                        else if (comboBox2.Text == "" || comboBox3.Text == "")
                         {
                             button4.Hide();
                             MessageBox.Show("请选择参数一和参数二再进行分割");
@@ -115,6 +119,8 @@ namespace 舌图分割
                     //grabcut函数迭代五次
                     else if (comboBox1.Text == "grabcut")
                     {
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -145,6 +151,8 @@ namespace 舌图分割
                     //分水岭
                     else if (comboBox1.Text == "watershed")
                     {
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -161,6 +169,8 @@ namespace 舌图分割
                     //均值漂移
                     else if (comboBox1.Text == "meanshift")
                     {
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -172,11 +182,13 @@ namespace 舌图分割
                         catch (Exception err)
                         {
                             MessageBox.Show(err.ToString());
-                        }            
+                        }
                     }
                     //漫水填充分割 
                     else if (comboBox1.Text == "floodfill")
                     {
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -188,11 +200,13 @@ namespace 舌图分割
                         catch (Exception err)
                         {
                             MessageBox.Show(err.ToString());
-                        }       
+                        }
                     }
                     //通过轮廓分割图像
                     else if (comboBox1.Text == "contour")
                     {
+                        comboBox2.Text = "";
+                        comboBox3.Text = "";
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -216,7 +230,7 @@ namespace 舌图分割
                         catch (Exception err)
                         {
                             MessageBox.Show(err.ToString());
-                        }            
+                        }
                     }
                     //异常处理
                     else
@@ -252,6 +266,7 @@ namespace 舌图分割
             Mat foreground = new Mat(image.Size(), MatType.CV_8UC3, new Scalar(0, 0, 0));
             image.CopyTo(foreground, mask);
             showRect(rect.X, rect.Y, rect.Width, rect.Height);
+            showImagePara(image);
             return foreground;
         }
 
@@ -332,6 +347,7 @@ namespace 舌图分割
             textBox8.Text = y.ToString();
             textBox9.Text = w.ToString();
             textBox10.Text = h.ToString();
+            showImagePara(image);
             panel1.Show();
             return image;
         }
@@ -630,6 +646,22 @@ namespace 舌图分割
             textBox6.Show();
         }
 
+        //grabcut show rect
+        private void showRect(int x, int y, int w, int h)
+        {
+            textBox7.Text = x.ToString();
+            textBox8.Text = y.ToString();
+            textBox9.Text = w.ToString();
+            textBox10.Text = h.ToString();
+            panel1.Show();
+        }
+
+        private void showImagePara(Mat image)
+        {
+            textBox12.Text = image.Width.ToString();
+            textBox11.Text = image.Height.ToString();
+        }
+
         //保存分割后的图片到本地
         private void button1_Click(object sender, EventArgs e)
         {
@@ -670,38 +702,28 @@ namespace 舌图分割
             }
         }
 
-        //grabcut show rect
-        private void showRect(int x, int y, int w, int h)
-        {
-            textBox7.Text = x.ToString();
-            textBox8.Text = y.ToString();
-            textBox9.Text = w.ToString();
-            textBox10.Text = h.ToString();
-            panel1.Show();
-        }
-
         //更改参数再次分割图片
         private void button4_Click(object sender, EventArgs e)
         {
             if (comboBox1.Text == "grabcut" && value1.Text == "迭代次数：" && value2.Text == "分割算子：")
             {
-                int iter_count = int.Parse(textBox5.Text);
-                GrabCutModes grabcutmode = (GrabCutModes)(Enum.Parse(typeof(GrabCutModes), comboBox4.Text));
-                int x = int.Parse(textBox7.Text);
-                int y = int.Parse(textBox8.Text);
-                int w = int.Parse(textBox9.Text);
-                int h = int.Parse(textBox10.Text);
-                if (iter_count > 20 || iter_count < 0)
+                try
                 {
-                    MessageBox.Show("迭代次数于0-20次之内较为合适");
-                }
-                else
-                {
-                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                    Mat image = BitmapConverter.ToMat(bitmap);
-                    double startTime = Cv2.GetTickCount();
-                    try
+                    int iter_count = int.Parse(textBox5.Text);
+                    GrabCutModes grabcutmode = (GrabCutModes)(Enum.Parse(typeof(GrabCutModes), comboBox4.Text));
+                    int x = int.Parse(textBox7.Text);
+                    int y = int.Parse(textBox8.Text);
+                    int w = int.Parse(textBox9.Text);
+                    int h = int.Parse(textBox10.Text);
+                    if (iter_count > 20 || iter_count < 0)
                     {
+                        MessageBox.Show("迭代次数于0-20次之内较为合适");
+                    }
+                    else
+                    {
+                        System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                        Mat image = BitmapConverter.ToMat(bitmap);
+                        double startTime = Cv2.GetTickCount();
                         Mat res = grabCut(image, iter_count, grabcutmode, x, y, w, h);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         showImage(res, duration);
@@ -709,44 +731,66 @@ namespace 舌图分割
                         textBox6.Hide();
                         showRect(x, y, w, h);
                     }
-                    catch (Exception err)
+                }
+                catch (Exception err)
+                {
+                    if (err.ToString().Contains("totalSampleCount"))
                     {
-                        if (err.ToString().Contains("totalSampleCount"))
-                        {
-                            MessageBox.Show("您选择的区域无法分割出前景，无法分割，请重新选择区域大小");
-                        }
-                        else if (err.ToString().Contains("mask"))
-                        {
-                            MessageBox.Show("掩模mask为空，无法分割");
-                        }
+                        MessageBox.Show("您选择的区域无法分割出前景，无法分割，请重新选择区域大小");
+                    }
+                    else if (err.ToString().Contains("mask"))
+                    {
+                        MessageBox.Show("掩模mask为空，无法分割");
+                    }
+                    else if (err.ToString().Contains("Format"))
+                    {
+                        MessageBox.Show("输入的字符串格式不正确，请重新输入");
                     }
                 }
             }
             if (comboBox1.Text == "watershed" && value1.Text == "中值滤波内核：" && value2.Text == "形态学卷积核：")
             {
-                if (int.Parse(textBox5.Text) % 2 == 0)
+                try
                 {
-                    MessageBox.Show("中值滤波内核应为奇数，请重新输入。");
-                }
-                else
-                {
-                    int meadianblur_ksize = int.Parse(textBox5.Text);
-                    string text = textBox6.Text;
-                    string diff11 = text.Replace("(", "");
-                    string diff12 = diff11.Replace(")", "");
-                    string[] str = diff12.Split(',');
-                    Size element_size = new Size(int.Parse(str[0]), int.Parse(str[1]));
-                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                    Mat image = BitmapConverter.ToMat(bitmap);
-                    try
+                    if (int.Parse(textBox5.Text) % 2 == 0)
                     {
-                        double startTime = Cv2.GetTickCount();
-                        Mat result = waterShed(image, meadianblur_ksize, element_size);
-                        double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
-                        showImage(result, duration);
-                        showParameters("中值滤波内核：", meadianblur_ksize.ToString(), "形态学卷积核：", "(" + element_size.Width.ToString() + "," + element_size.Height.ToString() + ")");
+                        MessageBox.Show("中值滤波内核应为奇数，请重新输入。");
                     }
-                    catch (Exception err)
+                    else
+                    {
+                        int meadianblur_ksize = int.Parse(textBox5.Text);
+                        if (meadianblur_ksize > 1000 || meadianblur_ksize < 0 )
+                        {
+                            MessageBox.Show("数值不合理，请重新输入适当的数值");
+                        }
+                        else
+                        {
+                            string text = textBox6.Text;
+                            string diff11 = text.Replace("(", "");
+                            string diff12 = diff11.Replace(")", "");
+                            string[] str = diff12.Split(',');
+                            Size element_size = new Size(int.Parse(str[0]), int.Parse(str[1]));
+                            System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                            Mat image = BitmapConverter.ToMat(bitmap);
+                            double startTime = Cv2.GetTickCount();
+                            Mat result = waterShed(image, meadianblur_ksize, element_size);
+                            double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
+                            showImage(result, duration);
+                            showParameters("中值滤波内核：", meadianblur_ksize.ToString(), "形态学卷积核：", "(" + element_size.Width.ToString() + "," + element_size.Height.ToString() + ")");
+                        }          
+                    }
+                }
+                catch (Exception err)
+                {
+                    if (err.ToString().Contains("Format"))
+                    {
+                        MessageBox.Show("输入的字符串格式不正确，请重新输入");
+                    }
+                    else if (err.ToString().Contains("索引超出了数组界限"))
+                    {
+                        MessageBox.Show("形态学卷积内核应用英文括号隔开");
+                    }
+                    else
                     {
                         MessageBox.Show(err.ToString());
                     }
@@ -754,25 +798,32 @@ namespace 舌图分割
             }
             if (comboBox1.Text == "meanshift" && value1.Text == "颜色域半径：" && value2.Text == "空间域半径：")
             {
-                int meanshift_sp = int.Parse(textBox5.Text);
-                int meanshift_sr = int.Parse(textBox6.Text);
-                if (meanshift_sp < 0 || meanshift_sr < 0)
+                try
                 {
-                    MessageBox.Show("参数有误");
-                }
-                else
-                {
-                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                    Mat image = BitmapConverter.ToMat(bitmap);
-                    try
+                    int meanshift_sp = int.Parse(textBox5.Text);
+                    int meanshift_sr = int.Parse(textBox6.Text);
+                    if (meanshift_sp < 0 || meanshift_sr < 0 || meanshift_sp>1000 || meanshift_sr>1000)
                     {
+                        MessageBox.Show("参数有误或数值过大，请重新输入数据");
+                    }
+                    else
+                    {
+                        System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                        Mat image = BitmapConverter.ToMat(bitmap);
                         double startTime = Cv2.GetTickCount();
                         Mat res = meanShift(image, meanshift_sp, meanshift_sr);
                         double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                         showImage(res, duration);
                         showParameters("颜色域半径：", meanshift_sp.ToString(), "空间域半径：", meanshift_sr.ToString());
                     }
-                    catch (Exception err)
+                }
+                catch (Exception err)
+                {
+                    if (err.ToString().Contains("Format"))
+                    {
+                        MessageBox.Show("输入的字符串格式不正确，请重新输入");
+                    }
+                    else
                     {
                         MessageBox.Show(err.ToString());
                     }
@@ -780,43 +831,55 @@ namespace 舌图分割
             }
             if (comboBox1.Text == "floodfill" && value1.Text == "像素最大下行差异值：" && value2.Text == "像素最大上行差异值：")
             {
-                string diff1 = textBox5.Text;
-                string diff11 = diff1.Replace("[", "");
-                string diff12 = diff11.Replace("]", "");
-                string[] str1 = diff12.Split(',');
-                Scalar lodiff = new Scalar(int.Parse(str1[0]), int.Parse(str1[1]), int.Parse(str1[2]), int.Parse(str1[3]));
-                string diff2 = textBox6.Text;
-                string diff21 = diff2.Replace("[", string.Empty);
-                string diff22 = diff21.Replace("]", string.Empty);
-                string[] str2 = diff22.Split(',');
-                int x = int.Parse(textBox7.Text);
-                int y = int.Parse(textBox8.Text);
-                int w = int.Parse(textBox9.Text);
-                int h = int.Parse(textBox10.Text);
-                Scalar updiff = new Scalar(int.Parse(str2[0]), int.Parse(str2[1]), int.Parse(str2[2]), int.Parse(str2[3]));
-                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                Mat image = BitmapConverter.ToMat(bitmap);
                 try
                 {
+                    string diff1 = textBox5.Text;
+                    string diff11 = diff1.Replace("[", "");
+                    string diff12 = diff11.Replace("]", "");
+                    string[] str1 = diff12.Split(',');
+                    Scalar lodiff = new Scalar(int.Parse(str1[0]), int.Parse(str1[1]), int.Parse(str1[2]), int.Parse(str1[3]));
+                    string diff2 = textBox6.Text;
+                    string diff21 = diff2.Replace("[", string.Empty);
+                    string diff22 = diff21.Replace("]", string.Empty);
+                    string[] str2 = diff22.Split(',');
+                    int x = int.Parse(textBox7.Text);
+                    int y = int.Parse(textBox8.Text);
+                    int w = int.Parse(textBox9.Text);
+                    int h = int.Parse(textBox10.Text);
+                    Scalar updiff = new Scalar(int.Parse(str2[0]), int.Parse(str2[1]), int.Parse(str2[2]), int.Parse(str2[3]));
+                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                    Mat image = BitmapConverter.ToMat(bitmap);
                     double startTime = Cv2.GetTickCount();
                     Mat res = floodFill(image, lodiff, updiff, x, y, w, h);
                     double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                     showImage(res, duration);
+                    showRect(x, y, w, h);
                     showParameters("像素最大下行差异值：", lodiff.ToString(), "像素最大上行差异值：", updiff.ToString());
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show(err.ToString());
+                    if (err.ToString().Contains("Format"))
+                    {
+                        MessageBox.Show("输入的字符串格式不正确，请重新输入(应输入英文逗号)");
+                    }
+                    else if (err.ToString().Contains("索引超出了数组界限"))
+                    {
+                        MessageBox.Show("像素最大下(上)行差异值应用英文括号隔开");
+                    }
+                    else
+                    {
+                        MessageBox.Show(err.ToString());
+                    }
                 }
             }
             if (comboBox1.Text == "contour" && value1.Text == "高斯核x方向标准差:" && value2.Text == "二值化算子:")
             {
-                ThresholdTypes contour_type = (ThresholdTypes)(Enum.Parse(typeof(ThresholdTypes), comboBox4.Text));
-                int sigmax = int.Parse(textBox5.Text);
-                System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
-                Mat image = BitmapConverter.ToMat(bitmap);
                 try
                 {
+                    ThresholdTypes contour_type = (ThresholdTypes)(Enum.Parse(typeof(ThresholdTypes), comboBox4.Text));
+                    int sigmax = int.Parse(textBox5.Text);
+                    System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
+                    Mat image = BitmapConverter.ToMat(bitmap);
                     double startTime = Cv2.GetTickCount();
                     Mat res = contourSeg(image, contour_type, sigmax);
                     double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
@@ -826,7 +889,11 @@ namespace 舌图分割
                 }
                 catch (Exception err)
                 {
-                    if (err.ToString().Contains("索引超出了数组界限"))
+                    if (err.ToString().Contains("Format"))
+                    {
+                        MessageBox.Show("输入的字符串格式不正确，请重新输入");
+                    }
+                    else if (err.ToString().Contains("索引超出了数组界限"))
                     {
                         MessageBox.Show("索引超出了数组界限，无法分割");
                     }
