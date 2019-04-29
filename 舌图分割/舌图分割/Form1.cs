@@ -572,7 +572,7 @@ namespace 舌图分割
         {
             if (pictureBox2.Image != null)
             {
-                MessageBox.Show("理想图片像素大小应与待评价分割图片一致。");
+                MessageBox.Show("理想图片背景应为黑色，大小应与待评价分割图片一致。");
                 OpenFileDialog openFileDialog2 = new OpenFileDialog();
                 openFileDialog2.ShowDialog();
                 string fileName = openFileDialog2.FileName;
