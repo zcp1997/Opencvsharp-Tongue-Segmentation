@@ -60,6 +60,7 @@ namespace 舌图分割
             else
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "图片文件|*.bmp;*.ico;*.jpeg;*.jpg;*.png;*.tif;*.tiff";
                 openFileDialog.ShowDialog();
                 string fileName1 = openFileDialog.FileName;
                 if (fileName1 != "")
@@ -574,6 +575,7 @@ namespace 舌图分割
             {
                 MessageBox.Show("理想图片背景应为黑色，大小应与待评价分割图片一致。");
                 OpenFileDialog openFileDialog2 = new OpenFileDialog();
+                openFileDialog2.Filter = "图片文件|*.bmp;*.ico;*.jpeg;*.jpg;*.png;*.tif;*.tiff";
                 openFileDialog2.ShowDialog();
                 string fileName = openFileDialog2.FileName;
                 if (fileName == null)
