@@ -37,6 +37,7 @@ namespace 舌图分割
             panel1.Hide();
             button4.Hide();
             comboBox4.Hide();
+            //Test();
         }
 
         //图像分割操作
@@ -766,7 +767,7 @@ namespace 舌图分割
                     else
                     {
                         int meadianblur_ksize = int.Parse(textBox5.Text);
-                        if (meadianblur_ksize > 1000 || meadianblur_ksize < 0 )
+                        if (meadianblur_ksize > 1000 || meadianblur_ksize < 0)
                         {
                             MessageBox.Show("数值不合理，请重新输入适当的数值");
                         }
@@ -784,7 +785,7 @@ namespace 舌图分割
                             double duration = (Cv2.GetTickCount() - startTime) / (Cv2.GetTickFrequency());
                             showImage(result, duration);
                             showParameters("中值滤波内核：", meadianblur_ksize.ToString(), "形态学卷积核：", "(" + element_size.Width.ToString() + "," + element_size.Height.ToString() + ")");
-                        }          
+                        }
                     }
                 }
                 catch (Exception err)
@@ -809,7 +810,7 @@ namespace 舌图分割
                 {
                     int meanshift_sp = int.Parse(textBox5.Text);
                     int meanshift_sr = int.Parse(textBox6.Text);
-                    if (meanshift_sp < 0 || meanshift_sr < 0 || meanshift_sp>1000 || meanshift_sr>1000)
+                    if (meanshift_sp < 0 || meanshift_sr < 0 || meanshift_sp > 1000 || meanshift_sr > 1000)
                     {
                         MessageBox.Show("参数有误或数值过大，请重新输入数据");
                     }
@@ -908,6 +909,36 @@ namespace 舌图分割
                     {
                         MessageBox.Show(err.ToString());
                     }
+                }
+            }
+        }
+        private void Test()
+        {
+            for (int i = 1; i <= 30; i++)
+            {
+                var image = Cv2.ImRead("D:/pictures/" + i + ".jpg");
+                try
+                {
+                    var grabCutImage = grabCut(image, 5, GrabCutModes.InitWithRect, 20, 30,
+                        image.Cols - 20, image.Height - 30);
+                    var watershedImage = waterShed(image, 15, new Size(15, 15));
+                    var meanShiftImage = meanShift(image, 50, 50);
+                    var floodFillImage = floodFill(image, new Scalar(5, 5, 5), new Scalar(5, 5, 5), 20, 30,
+                        image.Cols - 20, image.Height - 30);
+                    var contourImage = contourSeg(image, ThresholdTypes.Otsu, 2);
+                    if (grabCutImage != null && watershedImage != null && meanShiftImage != null
+                        && floodFillImage != null && contourImage != null)
+                    {
+                        Console.WriteLine("图片编号为" + i + "的图片所有算法分割成功。");
+                    }
+                    else
+                    {
+                        Console.WriteLine("图片编号为" + i + "的图片有算法分割失败。");
+                    }
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine("图片编号为" + i + "的图片分割失败，错误为" + err.ToString());
                 }
             }
         }
