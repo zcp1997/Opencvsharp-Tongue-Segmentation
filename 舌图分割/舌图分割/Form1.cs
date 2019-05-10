@@ -49,11 +49,11 @@ namespace 舌图分割
             textBox6.Hide();
             button4.Hide();
             comboBox4.Hide();
-            textBox1.Text = "";
-            textBox2.Text = "";
-            textBox3.Text = "";
-            textBox4.Text = "";
-            if (comboBox1.Text == "")
+            textBox1.Text = string.Empty;
+            textBox2.Text = string.Empty;
+            textBox3.Text = string.Empty;
+            textBox4.Text = string.Empty;
+            if (comboBox1.Text == string.Empty)
             {
                 MessageBox.Show("请先选择您所需要的算法。");
             }
@@ -63,7 +63,7 @@ namespace 舌图分割
                 openFileDialog.Filter = "图片文件|*.bmp;*.ico;*.jpeg;*.jpg;*.png;*.tif;*.tiff";
                 openFileDialog.ShowDialog();
                 string fileName1 = openFileDialog.FileName;
-                if (fileName1 != "")
+                if (fileName1 != string.Empty)
                 {
                     button4.Show();
                     pictureBox1.ImageLocation = fileName1;
@@ -107,7 +107,7 @@ namespace 舌图分割
                                 showImage(binImage, duration);
                             }
                         }
-                        else if (comboBox2.Text == "" || comboBox3.Text == "")
+                        else if (comboBox2.Text == string.Empty || comboBox3.Text == string.Empty)
                         {
                             button4.Hide();
                             MessageBox.Show("请选择参数一和参数二再进行分割");
@@ -122,8 +122,8 @@ namespace 舌图分割
                     //grabcut函数迭代五次
                     else if (comboBox1.Text == "grabcut")
                     {
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
+                        comboBox2.Text = string.Empty;
+                        comboBox3.Text = string.Empty;
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -154,8 +154,8 @@ namespace 舌图分割
                     //分水岭
                     else if (comboBox1.Text == "watershed")
                     {
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
+                        comboBox2.Text = string.Empty;
+                        comboBox3.Text = string.Empty;
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -172,8 +172,8 @@ namespace 舌图分割
                     //均值漂移
                     else if (comboBox1.Text == "meanshift")
                     {
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
+                        comboBox2.Text = string.Empty;
+                        comboBox3.Text = string.Empty;
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -190,8 +190,8 @@ namespace 舌图分割
                     //漫水填充分割 
                     else if (comboBox1.Text == "floodfill")
                     {
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
+                        comboBox2.Text = string.Empty;
+                        comboBox3.Text = string.Empty;
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -208,8 +208,8 @@ namespace 舌图分割
                     //通过轮廓分割图像
                     else if (comboBox1.Text == "contour")
                     {
-                        comboBox2.Text = "";
-                        comboBox3.Text = "";
+                        comboBox2.Text = string.Empty;
+                        comboBox3.Text = string.Empty;
                         try
                         {
                             double startTime = Cv2.GetTickCount();
@@ -257,6 +257,8 @@ namespace 舌图分割
         {
             var bgModel = new Mat();
             var fgdModel = new Mat();
+            var bgModel1 = new Mat();
+            var fgdModel1 = new Mat();
             var mask = new Mat();
             const int GC_PR_FGD = 3;
             Rect rect = new Rect();
@@ -301,7 +303,7 @@ namespace 舌图分割
             Cv2.Threshold(m, thresh, 0, 255, ThresholdTypes.Otsu);
             var element = Cv2.GetStructuringElement(MorphShapes.Rect, ELEMENT_SIZE);//获取自定义核
             Cv2.MorphologyEx(thresh, threshOpen, MorphTypes.Open, element);//开运算
-            Cv2.MorphologyEx(threshOpen, threshClose, MorphTypes.Close, element);//闭运算
+            Cv2.MorphologyEx(threshOpen, threshClose, MorphTypes.Close, element);//闭运算;
             Cv2.BitwiseAnd(src, src, res, threshClose);
             return res;
         }
@@ -397,7 +399,7 @@ namespace 舌图分割
         //操作：添加到算法评价表
         private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "")
+            if (textBox1.Text == string.Empty)
             {
                 MessageBox.Show("尚未对算法进行完整评价。");
             }
@@ -447,7 +449,7 @@ namespace 舌图分割
                     this.dataGridView1.Rows[index].Cells[2].Value = imageLike(textBox2.Text);
                     this.dataGridView1.Rows[index].Cells[3].Value = imageEvaluation(textBox1.Text);
                 }
-                else if (comboBox1.Text == "")
+                else if (comboBox1.Text == string.Empty)
                 {
                     MessageBox.Show("未知算法");
                 }
@@ -583,7 +585,7 @@ namespace 舌图分割
                     pictureBox1.ImageLocation = null;
                     pictureBox2.ImageLocation = null;
                 }
-                else if (fileName != "")
+                else if (fileName != string.Empty)
                 {
                     if (comboBox1.Text == "adaptiveThreshold")
                     {
@@ -771,8 +773,8 @@ namespace 舌图分割
                         else
                         {
                             string text = textBox6.Text;
-                            string diff11 = text.Replace("(", "");
-                            string diff12 = diff11.Replace(")", "");
+                            string diff11 = text.Replace("(", string.Empty);
+                            string diff12 = diff11.Replace(")", string.Empty);
                             string[] str = diff12.Split(',');
                             Size element_size = new Size(int.Parse(str[0]), int.Parse(str[1]));
                             System.Drawing.Bitmap bitmap = (System.Drawing.Bitmap)pictureBox1.Image;
@@ -839,8 +841,8 @@ namespace 舌图分割
                 try
                 {
                     string diff1 = textBox5.Text;
-                    string diff11 = diff1.Replace("[", "");
-                    string diff12 = diff11.Replace("]", "");
+                    string diff11 = diff1.Replace("[", string.Empty);
+                    string diff12 = diff11.Replace("]", string.Empty);
                     string[] str1 = diff12.Split(',');
                     Scalar lodiff = new Scalar(int.Parse(str1[0]), int.Parse(str1[1]), int.Parse(str1[2]), int.Parse(str1[3]));
                     string diff2 = textBox6.Text;
