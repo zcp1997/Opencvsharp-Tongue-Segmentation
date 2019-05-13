@@ -2,6 +2,7 @@
 using OpenCvSharp.Extensions;
 using System;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace 舌图分割
 {
@@ -941,6 +942,41 @@ namespace 舌图分割
                     Console.WriteLine("图片编号为" + i + "的图片分割失败，错误为" + err.ToString());
                 }
             }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            DataToExcel(dataGridView1);
+        }
+
+        private void DataToExcel(DataGridView dgv)
+        {
+            if (dgv.Rows.Count == 0)
+            {
+                MessageBox.Show("表中无数据。"); return;
+            }
+            MessageBox.Show("即将开始生成要导出的数据", "导出提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Excel.Application excel = new Excel.Application();
+            excel.Application.Workbooks.Add(true);
+            excel.Visible = false;
+            for (int i = 0; i < dgv.ColumnCount; i++)
+                excel.Cells[1, i + 1] = dgv.Columns[i].HeaderText;  
+            for (int i = 0; i < dgv.RowCount; i++)
+            {
+                for (int j = 0; j < dgv.ColumnCount; j++)
+                {
+                    if (dgv[j, i].ValueType == typeof(string))
+                    {
+                        excel.Cells[i + 2, j + 1] = "'" + dgv[j, i].Value.ToString();
+                    }
+                    else
+                    {
+                        excel.Cells[i + 2, j + 1] = dgv[j, i].Value.ToString();
+                    }
+                }
+            }
+            MessageBox.Show("生成成功，即将打开Excel。", "生成提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            excel.Visible = true;
         }
     }
 }

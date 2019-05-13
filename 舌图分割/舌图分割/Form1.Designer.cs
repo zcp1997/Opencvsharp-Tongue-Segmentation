@@ -76,12 +76,13 @@
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.button6 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -112,7 +113,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(325, 191);
+            this.button2.Location = new System.Drawing.Point(326, 186);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(143, 27);
@@ -123,12 +124,12 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(325, 284);
+            this.button3.Location = new System.Drawing.Point(325, 253);
             this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(143, 27);
             this.button3.TabIndex = 4;
-            this.button3.Text = "显示算法评价";
+            this.button3.Text = "添加到算法评价表";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -340,7 +341,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(325, 238);
+            this.button5.Location = new System.Drawing.Point(326, 219);
             this.button5.Margin = new System.Windows.Forms.Padding(2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(143, 27);
@@ -579,26 +580,6 @@
             this.panel1.Size = new System.Drawing.Size(453, 82);
             this.panel1.TabIndex = 44;
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(835, 328);
-            this.button4.Margin = new System.Windows.Forms.Padding(2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(101, 60);
-            this.button4.TabIndex = 45;
-            this.button4.Text = "重新分割";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(673, 363);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(137, 20);
-            this.comboBox4.TabIndex = 44;
-            // 
             // textBox11
             // 
             this.textBox11.BackColor = System.Drawing.SystemColors.ScrollBar;
@@ -647,11 +628,43 @@
             this.label18.TabIndex = 45;
             this.label18.Text = "原图高度:";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(835, 328);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(101, 60);
+            this.button4.TabIndex = 45;
+            this.button4.Text = "重新分割";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // comboBox4
+            // 
+            this.comboBox4.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(673, 363);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(137, 20);
+            this.comboBox4.TabIndex = 44;
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(325, 286);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(143, 27);
+            this.button6.TabIndex = 46;
+            this.button6.Text = "导出算法评价";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(963, 482);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.comboBox4);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.label11);
@@ -752,6 +765,7 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TextBox textBox12;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button button6;
     }
 }
 
